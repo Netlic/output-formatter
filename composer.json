@@ -1,0 +1,20 @@
+{
+    "name": "brano/format-output",
+    "description": "Format console text output",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Brano",
+            "email": "branislav.kutnik@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "OutputFormat\\": "src/"
+        },
+        "files": ["config/helpers.php"]
+    }
+}
