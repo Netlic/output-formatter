@@ -15,6 +15,11 @@ class Outputter
     /** @var OutputInterface */
     protected OutputInterface $output;
 
+    /**
+     * Outputter constructor.
+     * @param array $config
+     * @throws \Exception
+     */
     public function __construct(array $config = [])
     {
         $this->config = $this->mergeConfig($config);
@@ -36,13 +41,13 @@ class Outputter
     }
 
     /**
-     * @param string $configPath
+     * @param string|null $configPath
      * @return array|string
      */
-    public function getConfig(string $configPath = '')
+    public function getConfig(string $configPath = null)
     {
         $configValue = $this->config;
-        if (strpos($configPath, '.') !== false) {
+        if (!empty($configPath)) {
             $configPathArray = explode('.', $configPath);
             foreach($configPathArray as $part) {
                 if (empty($configValue[$part])) {
@@ -99,11 +104,14 @@ class Outputter
         return $merged;
     }
 
+    /**
+     * @throws \Exception
+     */
     protected function loadOutput()
     {
         $outputClass = $this->getConfig('output');
-        if () {
-
+        if (!in_array(OutputInterface::class, class_implements($outputClass))) {
+            throw new \Exception(sprintf('Provided class \'%s\' is not an output', $outputClass));
         }
         $this->output = new $outputClass();
     }
