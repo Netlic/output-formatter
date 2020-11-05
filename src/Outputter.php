@@ -2,10 +2,16 @@
 
 namespace OutputFormat;
 
+use OutputFormat\Formats\FinalFormatter;
+use OutputFormat\Interfaces\FormatterInterface;
 use OutputFormat\Interfaces\OutputInterface;
+use OutputFormat\Traits\AlteringTrait;
+use OutputFormat\Traits\DecorativeTrait;
 
 class Outputter
 {
+    use DecorativeTrait, AlteringTrait;
+
     /** @var Outputter|null */
     private static ?Outputter $instance = null;
 
@@ -14,6 +20,9 @@ class Outputter
     
     /** @var OutputInterface */
     protected OutputInterface $output;
+
+    /** @var FinalFormatter */
+    protected FinalFormatter $finalFormatter;
 
     /**
      * Outputter constructor.
@@ -24,20 +33,36 @@ class Outputter
     {
         $this->config = $this->mergeConfig($config);
         $this->loadOutput();
+        $this->loadFinalFormatter();
     }
 
-    public function setColor(string $color)
-    {
 
-    }
 
     /**
      * @param string $text
      * @param string|array $formats
+     * @return bool
+     * @throws \Exception
      */
-    public function print(string $text, $formats)
+    public function print(string $text, $formats = [])
     {
-        $this->output->printOutput();
+        if (!is_array($formats)) {
+            $formats = [$formats];
+        }
+        $finalFormatter = $this->finalFormatter->addFormatters($formats);
+
+        return $this->output->printOutput($finalFormatter(null, $text));
+    }
+
+    /**
+     * @param string $text
+     * @param array $formats
+     * @return bool
+     * @throws \Exception
+     */
+    public function printLine(string $text, $formats = [])
+    {
+        return $this->print($text . PHP_EOL, $formats);
     }
 
     /**
@@ -61,10 +86,10 @@ class Outputter
     }
 
     /**
-     * @param string $configPath
+     * @param string|null $configPath
      * @return array|string
      */
-    public static function config(string $configPath = '')
+    public static function config(string $configPath = null)
     {
         if (self::$instance) {
             return self::$instance->getConfig($configPath);
@@ -76,6 +101,7 @@ class Outputter
     /**
      * @param array $config
      * @return Outputter
+     * @throws \Exception
      */
     public static function init(array $config = []) :Outputter
     {
@@ -109,10 +135,32 @@ class Outputter
      */
     protected function loadOutput()
     {
-        $outputClass = $this->getConfig('output');
-        if (!in_array(OutputInterface::class, class_implements($outputClass))) {
-            throw new \Exception(sprintf('Provided class \'%s\' is not an output', $outputClass));
+        $class = $this->getAndCheckClassFromConfig('output', OutputInterface::class);
+        $this->output = new $class();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    protected function loadFinalFormatter()
+    {
+        $class = $this->getAndCheckClassFromConfig('formatters.final-formatter', FormatterInterface::class);
+        $this->finalFormatter = new $class();
+    }
+
+    /**
+     * @param string $classPath
+     * @param string $implements
+     * @return array|string
+     * @throws \Exception
+     */
+    private function getAndCheckClassFromConfig(string $classPath, string $implements)
+    {
+        $class = $this->getConfig($classPath);
+        if (!in_array($implements, class_implements($class))) {
+            throw new \Exception(sprintf('Provided class \'%s\' is not required interface \'%s\'', $class, $implements));
         }
-        $this->output = new $outputClass();
+
+        return $class;
     }
 }
