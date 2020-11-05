@@ -9,8 +9,22 @@ class Stdout implements OutputInterface
     /** @var string */
     protected string $outputString;
 
-    public function printOutput()
+    /**
+     * @param string $outputString
+     * @return Stdout
+     */
+    public function setOutputString(string $outputString) :Stdout
     {
-        return fwrite(STDOUT, $this->outputString);
+        $this->outputString = $outputString;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function printOutput(string $output = null) :bool
+    {
+        return (bool)fwrite(STDOUT, (string)$output);
     }
 }
