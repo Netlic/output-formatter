@@ -9,7 +9,7 @@ if (!function_exists('translateFormat')) {
      * @return string
      */
     function translateFormat(string $format) :string {
-        return Outputter::config('translation-formats.' . $format);
+        return config('translation-formats.' . $format);
     };
 }
 
@@ -20,5 +20,16 @@ if (!function_exists('getDefaultConfig')) {
      */
     function getDefaultConfig() :array {
         return require_once 'config.php';
+    };
+}
+
+if (!function_exists('config')) {
+    /**
+     * Gets the config merged values
+     * @param string|null $configPath
+     * @return array|string
+     */
+    function config(string $configPath = null) {
+        return Outputter::config($configPath);
     };
 }
