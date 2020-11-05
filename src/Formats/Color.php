@@ -1,10 +1,8 @@
 <?php
 
-namespace OutputFormat\Colors;
+namespace OutputFormat\Formats;
 
-use OutputFormat\Formats\Formats;
-
-class Color extends Formats
+class Color extends DecorativeFormats
 {
     /**
      * @param string $color

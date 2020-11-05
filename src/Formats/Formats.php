@@ -17,30 +17,4 @@ abstract class Formats
 
         return $this;
     }
-
-    public function restoreDefault()
-    {
-
-    }
-
-    public function __toString() :string
-    {
-        return $this->format;
-    }
-
-    public function __invoke(string $format, string $text)
-    {
-        $this->format = $this->translateFormat($format);
-
-        return (string)$this;
-    }
-
-    /**
-     * @param string $rawFormat
-     * @return string
-     */
-    protected function translateFormat(string $rawFormat) :string
-    {
-        return translateFormat($rawFormat);
-    }
 }
