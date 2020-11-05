@@ -16,5 +16,9 @@ interface AlteringFormattingInterface
      */
     public function getValue();
 
-    public function translateValue($value);
+    /**
+     * @param $value
+     * @return string
+     */
+    public function translateValue($value) :string;
 }
