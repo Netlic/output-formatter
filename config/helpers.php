@@ -9,7 +9,9 @@ if (!function_exists('translateFormat')) {
      * @return string
      */
     function translateFormat(string $format) :string {
-        return config('translation-formats.' . $format);
+        $code = config('translation-formats.' . $format);
+
+        return is_array($code) ? $format : $code;
     };
 }
 
