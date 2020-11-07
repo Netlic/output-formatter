@@ -5,7 +5,7 @@ namespace OutputFormat\Formats;
 use OutputFormat\Interfaces\FormatterInterface;
 use OutputFormat\Interfaces\Formatters\DecorativeFormatterInterface;
 
-abstract class DecorativeFormats extends Formats implements FormatterInterface, DecorativeFormatterInterface
+abstract class DecorativeFormats extends Formats implements DecorativeFormatterInterface
 {
     public function restoreDefault()
     {

@@ -2,10 +2,9 @@
 
 namespace OutputFormat\Formats;
 
-use OutputFormat\Interfaces\FormatterInterface;
 use OutputFormat\Interfaces\Formatters\AlteringFormattingInterface;
 
-abstract class AlteringFormats extends Formats implements FormatterInterface, AlteringFormattingInterface
+abstract class AlteringFormats extends Formats implements AlteringFormattingInterface
 {
     /** @var mixed */
     protected $value;
