@@ -2,7 +2,9 @@
 
 namespace OutputFormat\Formats;
 
-abstract class Formats
+use OutputFormat\Interfaces\FormatterInterface;
+
+abstract class Formats implements FormatterInterface
 {
     /** @var string */
     protected string $format;
