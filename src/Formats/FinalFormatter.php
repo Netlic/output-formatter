@@ -16,7 +16,7 @@ class FinalFormatter extends AlteringFormats implements \ArrayAccess
     protected string $text = '';
 
     /** @var string[] */
-    protected array $formats;
+    protected array $formats = [];
 
     /** @var FormatterInterface[] */
     protected array $formatters = [];
@@ -27,7 +27,7 @@ class FinalFormatter extends AlteringFormats implements \ArrayAccess
      */
     public function addFormatters(array $formatters) :self
     {
-        $this->formats = $formatters;
+        $this->formats = array_merge($this->formats, $formatters);
 
         return $this;
     }
@@ -37,7 +37,7 @@ class FinalFormatter extends AlteringFormats implements \ArrayAccess
      * @param $format
      * @throws \Exception
      */
-    public function addDecoration(string $formatter, $format)
+    public function addDecorative(string $formatter, $format)
     {
         $formatterInstance = $this->getFormatter($formatter);
         $this->addedDecorations[] = $formatterInstance($format);
@@ -56,18 +56,6 @@ class FinalFormatter extends AlteringFormats implements \ArrayAccess
         $this->formats[] = $merged;
     }
 
-    /*public function addFormat(FormatterInterface $format, $value, $text)
-    {
-        //var_dump($value, $text);
-        if ($format->type() == 'decorative') {
-            $this->addedDecorations[] = $format($value);
-        } else {
-            $this->text = $format($value, $text);
-        }
-
-        var_dump($this->text);
-    }*/
-
     /**
      * @param $value
      * @return string
@@ -85,7 +73,10 @@ class FinalFormatter extends AlteringFormats implements \ArrayAccess
 
             $formatterInstance = $this->getFormatter($formatter);
             if ($formatterInstance->type() === 'decorative') {
-                $this->addedDecorations[] = $formatterInstance($formatValue);
+                $decorationCode = $formatterInstance($formatValue);
+                if (!in_array($decorationCode, $this->addedDecorations)) {
+                    $this->addedDecorations[] = $decorationCode;
+                }
             } else {
                 $value = $formatterInstance($formatValue, $value);
             }
@@ -152,7 +143,9 @@ class FinalFormatter extends AlteringFormats implements \ArrayAccess
 
     public function offsetUnset($offset)
     {
-        // TODO: Implement offsetUnset() method.
+        if (!empty($this->formatters[$offset])) {
+            unset($this->formatters[$offset]);
+        }
     }
 
     /**
