@@ -5,13 +5,18 @@ namespace OutputFormat;
 use OutputFormat\Formats\FinalFormatter;
 use OutputFormat\Interfaces\FormatterInterface;
 use OutputFormat\Interfaces\OutputInterface;
-use OutputFormat\Traits\AlteringTrait;
-use OutputFormat\Traits\DecorativeTrait;
 
+/**
+ * Class Outputter
+ * @package OutputFormat
+ * @method Outputter color(string $color)
+ * @method Outputter backgroundColor(string $color)
+ * @method Outputter lowercase()
+ * @method Outputter capitalizeWords()
+ * @method Outputter textFeature(string $feature)
+ */
 class Outputter
 {
-    use DecorativeTrait, AlteringTrait;
-
     /** @var Outputter|null */
     private static ?Outputter $instance = null;
 
@@ -36,15 +41,23 @@ class Outputter
         $this->loadFinalFormatter();
     }
 
+    public function __call($method, $arguments)
+    {
+        //transform camelCase
+        $method = strtolower(preg_replace('%([a-z])([A-Z])%', '\1-\2', $method));
+        $finalFormatterMethod = 'add' . ucfirst(($this->finalFormatter[$method]->type()));
+        call_user_func_array([$this->finalFormatter, $finalFormatterMethod], array_merge([$method], $arguments));
 
+        return $this;
+    }
 
     /**
      * @param string $text
      * @param string|array $formats
+     * @param bool $preserveFormatting
      * @return bool
-     * @throws \Exception
      */
-    public function print(string $text, $formats = [])
+    public function print(string $text, $formats = [], bool $preserveFormatting = false)
     {
         if (!is_array($formats)) {
             $formats = [$formats];
@@ -57,12 +70,12 @@ class Outputter
     /**
      * @param string $text
      * @param array $formats
+     * @param bool $preserveFormatting
      * @return bool
-     * @throws \Exception
      */
-    public function printLine(string $text, $formats = [])
+    public function printLine(string $text, $formats = [], bool $preserveFormatting = false)
     {
-        return $this->print($text . PHP_EOL, $formats);
+        return $this->print($text . PHP_EOL, $formats, $preserveFormatting);
     }
 
     /**
@@ -83,6 +96,19 @@ class Outputter
         }
 
         return $configValue;
+    }
+
+    /**
+     * @param array $features
+     * @return Outputter
+     */
+    public function textFeatures(array $features) :Outputter
+    {
+        foreach ($features as $feature) {
+            $this->textFeature($feature);
+        }
+
+        return $this;
     }
 
     /**
