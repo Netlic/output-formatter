@@ -34,7 +34,7 @@ class Outputter
      * @param array $config
      * @throws \Exception
      */
-    public function __construct(array $config = [])
+    protected function __construct(array $config = [])
     {
         $this->config = $this->mergeConfig($config);
         $this->loadOutput();
@@ -63,6 +63,7 @@ class Outputter
             $formats = [$formats];
         }
         $finalFormatter = $this->finalFormatter->addFormatters($formats);
+        $finalFormatter->setPreserveFormatting($preserveFormatting);
 
         return $this->output->printOutput($finalFormatter(null, $text));
     }
@@ -88,7 +89,7 @@ class Outputter
         if (!empty($configPath)) {
             $configPathArray = explode('.', $configPath);
             foreach($configPathArray as $part) {
-                if (empty($configValue[$part])) {
+                if (!array_key_exists($part, $configValue)) {
                     return $configValue;
                 }
                 $configValue = $configValue[$part];

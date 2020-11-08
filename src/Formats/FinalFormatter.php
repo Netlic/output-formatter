@@ -21,6 +21,9 @@ class FinalFormatter extends AlteringFormats implements \ArrayAccess
     /** @var FormatterInterface[] */
     protected array $formatters = [];
 
+    /** @var bool */
+    protected bool $preserveFormatting = false;
+
     /**
      * @param array $formatters
      * @return FinalFormatter
@@ -72,7 +75,7 @@ class FinalFormatter extends AlteringFormats implements \ArrayAccess
             }
 
             $formatterInstance = $this->getFormatter($formatter);
-            if ($formatterInstance->type() === 'decorative') {
+            if ($formatterInstance->type() === self::DECORATIVE_FORMATTER) {
                 $decorationCode = $formatterInstance($formatValue);
                 if (!in_array($decorationCode, $this->addedDecorations)) {
                     $this->addedDecorations[] = $decorationCode;
@@ -94,14 +97,11 @@ class FinalFormatter extends AlteringFormats implements \ArrayAccess
     }
 
     /**
-     * Gets the formatter instance
-     * @param string $formatter
-     * @return FormatterInterface|null
-     * @throws \Exception
+     * @param bool $preserveFormatting
      */
-    public function getFormatter(string $formatter)
+    public function setPreserveFormatting(bool $preserveFormatting)
     {
-        return $this[$formatter];
+        $this->preserveFormatting = $preserveFormatting;
     }
 
     public function offsetExists($offset)
@@ -127,6 +127,11 @@ class FinalFormatter extends AlteringFormats implements \ArrayAccess
         return $this->formatters[$offset];
     }
 
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     * @throws \Exception
+     */
     public function offsetSet($offset, $value)
     {
         if (!is_object($value)) {
@@ -149,16 +154,35 @@ class FinalFormatter extends AlteringFormats implements \ArrayAccess
     }
 
     /**
+     * Gets the formatter instance
+     * @param string $formatter
+     * @return FormatterInterface|null
+     * @throws \Exception
+     */
+    protected function getFormatter(string $formatter)
+    {
+        return $this[$formatter];
+    }
+
+    /**
+     * @param string $text
      * @return string
      */
-    private function composeOpeningTag() :string
+    private function composeTag(string $text) :string
     {
         $delimiter = config('escape-tag.delimiter');
         $textModes = implode($delimiter, $this->addedDecorations);
         $begin = config('escape-tag.begin');
         $end = config('escape-tag.end');
 
-        return sprintf('%s%s%s', $begin, $textModes, $end);
+        $opening = sprintf('%s%s%s', $begin, $textModes, $end);
+        $closing = '';
+        if (!$this->preserveFormatting) {
+            $default = config('translation-formats.default');
+            $closing = sprintf('%s%s%s', $begin, $default, $end);
+        }
+
+        return $opening . $text . $closing;
     }
 
     /**
@@ -167,6 +191,6 @@ class FinalFormatter extends AlteringFormats implements \ArrayAccess
      */
     private function wrap(string $value)
     {
-        return sprintf('%s%s', $this->composeOpeningTag(), $value);
+        return $this->composeTag($value);
     }
 }
