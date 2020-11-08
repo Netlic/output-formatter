@@ -27,7 +27,7 @@ $myConfigArray = ['translation-formats' => [
     ]
 ]];
 
-$outputter = Outputter::init();
+$outputter = Outputter::init($myConfigArray);
 ``` 
 ## Usage
 #### Initialize the library
