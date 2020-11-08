@@ -2,7 +2,6 @@
 
 use OutputFormat\Formats\BackgroundColor;
 use OutputFormat\Formats\Color;
-use OutputFormat\Formats\DecorativeFormats;
 use OutputFormat\Formats\FinalFormatter;
 use OutputFormat\Formats\Text\Lowercase;
 use OutputFormat\Formats\Text\Ucwords;
@@ -57,7 +56,6 @@ return [
             'more-color-prefix' => "48;5;"
         ],
         'default' => "0",
-
     ],
 
     'escape-tag' => [
