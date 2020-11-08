@@ -9,7 +9,9 @@ use OutputFormat\Formats\TextFeatures;
 use OutputFormat\Output\Stdout;
 
 return [
+    //Map containing values for decorative formatters
     'translation-formats' => [
+        //foreground colors
         'colors' => [
             'black' => "30",
             'red' => "31",
@@ -55,17 +57,21 @@ return [
             'light-white' => "107",
             'more-color-prefix' => "48;5;"
         ],
+        // value restoring default text formatting and color
         'default' => "0",
     ],
 
+    //Used for composing output formatting string
     'escape-tag' => [
         'begin' => "\033[",
         'end' => "m",
         'delimiter' => ";"
     ],
 
+    //Class which determines the way of text formatting
     'output' => Stdout::class,
 
+    //Actual formatter classes
     'formatters' => [
         'color' => Color::class,
         'text-feature' => TextFeatures::class,
