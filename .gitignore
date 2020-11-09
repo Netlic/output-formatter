@@ -1,3 +1,4 @@
 /.idea
 /vendor
 logicTest.php
+.phpunit.result.cache

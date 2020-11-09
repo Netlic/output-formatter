@@ -16,5 +16,8 @@
             "OutputFormat\\": "src/"
         },
         "files": ["config/helpers.php"]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5@dev"
     }
 }
