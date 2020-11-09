@@ -21,8 +21,8 @@ class Color extends DecorativeFormats
      */
     public function translateFormat(string $rawFormat) :string
     {
-        $replaced = preg_replace('/[^0-9]/', '', $rawFormat);
-        if (!empty($replaced)) {
+        $replaced = preg_replace('/[^0-9]/', '', (string)$rawFormat);
+        if (is_numeric($replaced)) {
             $moreColors = (config(sprintf('translation-formats.%s.more-color-prefix', $this->configPath)));
 
             return $moreColors . $replaced;
