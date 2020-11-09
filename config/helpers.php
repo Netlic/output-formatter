@@ -21,7 +21,7 @@ if (!function_exists('getDefaultConfig')) {
      * @return array
      */
     function getDefaultConfig() :array {
-        return require_once 'config.php';
+        return require 'config.php';
     };
 }
 
