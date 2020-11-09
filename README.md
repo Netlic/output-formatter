@@ -89,3 +89,5 @@ Simply rewrite class reference under the desired config key [as suggested above]
 This way you can also extend the list of existing formatters. 
 A good practice after doing so would be extending the base class
 `OutputFormat\OutputFormat` and update the PHP doc of the class.
+
+[Source of knowledge](https://misc.flogisoft.com/bash/tip_colors_and_formatting)
