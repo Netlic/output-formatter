@@ -85,6 +85,7 @@ use OutputFormat\Outputter;
 ```
 #### Modifying formatters
 Any formatter can be easily replaced by your custom class.
-Simply rewrite class reference under the desired config key. This way you can also extend the list
-of existing formatters. A good practice after doing so would be extending the base class
+Simply rewrite class reference under the desired config key [as suggested above](#configuration). 
+This way you can also extend the list of existing formatters. 
+A good practice after doing so would be extending the base class
 `OutputFormat\OutputFormat` and update the PHP doc of the class.
